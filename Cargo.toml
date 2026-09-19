@@ -1,0 +1,10 @@
+[package]
+name = "ball-cards"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+
+[[bin]]
+name = "ball-cards"
+path = "main.rs"
