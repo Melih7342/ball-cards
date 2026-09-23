@@ -52,5 +52,9 @@ impl DanceCard {
 }
 
 fn main() {
+    let mut lottes_card = DanceCard::new(String::from("Lotte"));
 
+    let _result: Result<(), String> = lottes_card.book_dance(1, String::from("Werther"));
+
+    println!("{:#?}", lottes_card);
 }
