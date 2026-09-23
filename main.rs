@@ -1,3 +1,5 @@
+use std::fmt::Error;
+
 #[derive(Debug, PartialEq)]
 enum DanceStyle {
     Walzer,
@@ -31,6 +33,21 @@ impl DanceCard {
             owner: owner_name,
             slots: initial_slots,
         }
+    }
+
+    fn book_dance(&mut self, slot_id: u8, partner_name: String) -> Result<(), String> {
+        for slot in &mut self.slots {
+            if slot.id == slot_id {
+                match slot.partner {
+                    Some(_) => return Err("The dance is taken.".to_string()),
+                    None => {
+                        slot.partner = Some(partner_name);
+                        return Ok(())
+                    } 
+                }
+            }
+        }
+        Err("The dance isn't on the dance card!".to_string())
     }
 }
 
