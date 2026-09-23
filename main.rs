@@ -1,4 +1,6 @@
 use std::fmt::Error;
+use std::sync::{Arc, Mutex};
+use std::thread;
 
 #[derive(Debug, PartialEq)]
 enum DanceStyle {
@@ -54,7 +56,28 @@ impl DanceCard {
 fn main() {
     let mut lottes_card = DanceCard::new(String::from("Lotte"));
 
-    let _result: Result<(), String> = lottes_card.book_dance(1, String::from("Werther"));
+    let shared_card = Arc::new(Mutex::new(lottes_card));
 
-    println!("{:#?}", lottes_card);
+    let card_for_werther = Arc::clone(&shared_card);
+
+    let thread_werther = thread::spawn(move || {
+        let mut card = card_for_werther.lock().unwrap();
+
+        let result = card.book_dance(1, String::from("Werther"));
+        println!("Werther tries to book Slot 1: {:?}", result);    
+    });
+
+    let card_for_albert = Arc::clone(&shared_card);
+    
+    let thread_albert = thread::spawn(move || {
+        let mut card = card_for_albert.lock().unwrap();
+        
+        let result = card.book_dance(1, String::from("Albert"));
+        println!("Albert versucht Slot 1 zu buchen: {:?}", result);
+    });
+
+    thread_werther.join().unwrap();
+    thread_albert.join().unwrap();
+
+    println!("{:#?}", shared_card.lock().unwrap());
 }
